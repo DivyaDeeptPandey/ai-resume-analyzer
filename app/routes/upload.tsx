@@ -29,6 +29,7 @@ const upload = () => {
             setStatusText("Generating insights...");
 
             const imageFile = await convertPdfToImage(file);
+            console.log(imageFile);
             if(!imageFile.file) return setStatusText("Failed to process resume. Please try again.");
 
             setStatusText("Processing Image...");
@@ -62,6 +63,12 @@ const upload = () => {
             const feedbackText = typeof feedback.message.content === "string" 
             ? feedback.message.content
             : feedback.message.content[0].text;
+
+            data.feedback = JSON.parse(feedbackText);
+            await kv.set(`resume:${uuid}`, JSON.stringify(data));
+            setStatusText("Analysis complete!");
+            console.log(data);
+            navigate(`/resume/${uuid}`);
         }
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
